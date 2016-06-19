@@ -90,6 +90,9 @@ csvConverter.on("end_parsed", function(jsonObj) {
       console.log("cant index the db because of an error",e)
       process.exit()
     })
+  }).catch(function(e){
+    clearInterval(timer);
+    console.log("error",e)
   })
 });
 
