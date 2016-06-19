@@ -1,0 +1,68 @@
+<div class="card-panel" id="profile-basic-info">
+   <div class="row" >
+      <div class="col l4 s12 modal-info">
+         <h4 class="modal-title">{{modal.schoolName}}</h4>
+         <p class="modal-location" style="margin-bottom:5px;">{{modal.location}}</p>
+         <div ng-show="diversetyPercentage >= 50" class="hide">
+            <div class="chip success">
+               <i class="material-icons">thumb_up</i>
+               {{ diversetyPercentage}}% of students in this school are minorities 
+            </div>
+            <p class="helper-text">The higher the better </p>
+         </div>
+         <div ng-show="diversetyPercentage <= 49" class="hide">
+            <div class="chip warning">
+               <i class="material-icons">thumb_down</i>
+               {{ diversetyPercentage}}% of students in this school are minorities 
+            </div>
+         </div>
+      </div>
+      <div class="col l2 s12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+               <h3 class="panel-title">Total Students</h3>
+            </div>
+            <div class="panel-body"> {{x.total_students | number:0}} </div>
+         </div>
+      </div>
+      <div class="col l2 s12">
+         <div class="panel panel-success">
+            <div class="panel-heading">
+               <h3 class="panel-title">Total Minorities</h3>
+            </div>
+            <div class="panel-body"> {{x.total_miniorities | number:0}} </div>
+         </div>
+      </div>
+      <div class="col l2 s12">
+         <div class="panel panel-info">
+            <div class="panel-heading">
+               <h3 class="panel-title">Avg. Classroom size</h3>
+            </div>
+            <div class="panel-body"> {{x.total_students / x.total_teachers | number:0}} </div>
+         </div>
+      </div>
+      <div class="col l2 s12">
+         <div class="panel panel-warning">
+            <div class="panel-heading">
+               <h3 class="panel-title">Total Suspensions</h3>
+            </div>
+            <div class="panel-body"> {{x.total_suspended | number:0 }} </div>
+         </div>
+      </div>
+   </div>
+</div>
+<div class="card-panel">
+   <div class="card-header">Students</div>
+   <canvas id="race-chart" width="726" height="200"></canvas>
+</div>
+<div id="stats">
+   <div class="card-panel">
+      <div class="stat-text">{{diversetyPercentage}}% of students in this school are minorities</div>
+   </div>
+   <div class="card-panel">
+      <div class="stat-text">{{ most_likely.value | number:2}}%  of <b>{{ most_likely.key }} students</b> was suspended this year - highest in the school </div>
+   </div>
+   <div class="card-panel">
+      <div class="stat-text">{{ least_likey.value | number:2}}% of <b>{{ least_likey.key }} students</b> was suspended this year - least in the school </div>
+   </div>
+</div>

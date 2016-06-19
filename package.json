@@ -1,0 +1,35 @@
+{
+  "name": "crcd",
+  "version": "1.0.0",
+  "description": "A simple way to view the 2013-2014 Civil Rights Collection Dataset for Department of Education",
+  "main": "server.js",
+  "dependencies": {
+    "byline": "^4.2.1",
+    "cities": "^1.1.2",
+    "csvtojson": "^0.5.14",
+    "express": "^4.13.4",
+    "gps2zip": "^2.1.0",
+    "knex": "^0.11.5",
+    "pg": "^5.1.0",
+    "sprintf-js": "^1.0.3",
+    "unzip": "^0.1.11"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "test.js",
+    "start": "node server.js",
+    "import": "node scripts/import.js",
+    "update": "node scripts/update.js"
+  },
+  "keywords": [
+    "civl",
+    "rights",
+    "collection",
+    "dataset",
+    "department",
+    "of",
+    "education"
+  ],
+  "author": "David Holmes",
+  "license": "MIT"
+}
