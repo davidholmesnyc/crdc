@@ -70,11 +70,19 @@ csvConverter.on("end_parsed", function(jsonObj) {
   var child = require('child_process').exec(pgfutter)
     child.stdout.pipe(process.stdout)
   */
- 
-  var child = spawn(__dirname+"/pgfutter", pgfutter.split(" "), { stdio: 'inherit' });
-  child.on('close', function() {
+  console.log("importing json file to postgres.. could take 10 mins or longer")
+  var seconds = 1
+  var timer = setInterval(function(){
+    process.stdout.write("importing to postgres:" + seconds +" seconds" + "\r");
+    seconds = seconds + 1
+  },1000)
+ var create_table = "CREATE SCHEMA IF NOT EXISTS "+config.DB_SCHEMA+"; CREATE TABLE IF NOT EXISTS "+config.DB_SCHEMA+"."+config.DB_TABLE+" (data jsonb);"
+ var import_json = "copy "+config.DB_SCHEMA+"."+config.DB_TABLE+"(data) from '"+__dirname+"/files/"+config.CRCD_JSON_FILE+"' csv quote e'\\x01' delimiter e'\\x02'"
+  knex.raw(create_table+import_json).then(function(){
+    console.log("complete")
+    clearInterval(timer);
     console.log("creating index on db for faster queries.. could take a while")
-    knex.raw("CREATE INDEX school_id ON education.crcd ((data->>'SCHID'));CREATE INDEX geodata_index ON education.crcd ((data->>'LEA_STATE'),(data->>'city'),(data->>'zipcode'));")
+    knex.raw("CREATE INDEX school_id ON "+config.DB_SCHEMA+"."+config.DB_TABLE+" ((data->>'SCHID'));CREATE INDEX geodata_index ON "+config.DB_SCHEMA+"."+config.DB_TABLE+" ((data->>'LEA_STATE'),(data->>'city'),(data->>'zipcode'));")
     .then(function(err,data){
       console.log("finished -- you can now start the server using npm start")
       process.exit()
