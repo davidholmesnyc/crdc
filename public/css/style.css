@@ -206,4 +206,18 @@ box-shadow: 0 2px 5px 0 rgb(36, 192, 239),0 2px 10px 0 rgb(76, 247, 226);
   color:lightGrey;
   font-size:12px;
  }
+  header, main, footer {
+      padding-left: 240px;
+  }
+  @media only screen and (min-width: 993px){
+  .container {
+      width: 85%;
+  }
+ }
+ @media only screen and (max-width: 992px){
+ header, main, footer {
+     padding-left: 0;
+ }
+ }
+ 
  
