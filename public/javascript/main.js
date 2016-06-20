@@ -1,7 +1,7 @@
 // init angular 
 var app = angular.module('crcd', ['ui.router']);
 // default search url 
-var search_url = '/search?zipcode='
+var search_url = 'search?zipcode='
 // helper functions 
 var helper = {
   /**
