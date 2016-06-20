@@ -51,6 +51,18 @@ var helper = {
       'multi race':helper.per((x.inhouse_suspension_multi_race +  x.single_suspension_multi_race + x.multi_suspension_multi_race), x.enrolled_multi_race),
     }
     return helper.sortObject(races)
+  },
+  'find_insights':function (x,column_name){
+    var races = {
+      'white':helper.per( x[column_name+'_white'], x.enrolled_white ),
+      'black':helper.per( x[column_name+'_black'], x.enrolled_black),
+      'hispanic':helper.per( x[column_name+'_hispanic'], x.enrolled_hispanic),
+      'asian':helper.per( x[column_name+'_asian'], x.enrolled_asian),
+      'american indian':helper.per( x[column_name+'_american_indian'], x.enrolled_american_indian),
+      'native hawaiian':helper.per( x[column_name+'_native_hawaiian'], x.enrolled_native_hawaiian),
+      'multi race':helper.per( x[column_name+'_multi_race'], x.enrolled_multi_race),
+    }
+    return helper.sortObject(races)
   }
 }
 // angular controller
@@ -115,7 +127,9 @@ app.controller('myCtrl', function($scope,$http,$state) {
       var likely = helper.more_likely(x)
       $scope.x = x 
       $scope.most_likely = helper.least_likely(likely)[0]
-      console.log("tesdsfdst", helper.least_likely(likely) )
+      var find_gifted_students_insights = helper.find_insights(x,'gifted_students')
+      $scope.gifted_students = find_gifted_students_insights[0]
+      $scope.least_gifted_students = helper.least_likely(find_gifted_students_insights).slice(-1)[0]
       $scope.least_likey = helper.least_likely(likely).slice(-1)[0]
       $scope.diversetyPercentage = Math.abs((((x.total_students - x.total_miniorities) / x.total_students) * 100) - 100).toFixed(0)
       $scope.modal = {}
@@ -131,8 +145,8 @@ app.controller('myCtrl', function($scope,$http,$state) {
                 backgroundColor: "rgba(64,196,255,0.2)",
                 borderColor: "rgba(64,196,255,1)",
                 borderWidth: 1,
-                hoverBackgroundColor: "rgba(255,99,132,0.4)",
-                hoverBorderColor: "rgba(255,99,132,1)",
+                hoverBackgroundColor: "rgba(64,196,255,0.2)",
+                hoverBorderColor: "rgba(64,196,255,1)",
                 data: [
                   x.enrolled_white , 
                   x.enrolled_black, 
@@ -144,12 +158,29 @@ app.controller('myCtrl', function($scope,$http,$state) {
                 ],
             },
             {
+              label: "Gifted Studens",
+              backgroundColor: "rgba(223, 240, 216, 0.51)",
+              borderColor: "rgba(223, 240, 216, 0.51)",
+              borderWidth: 1,
+              hoverBackgroundColor: "rgba(223, 240, 216, 0.51)",
+              hoverBorderColor: "rgba(223, 240, 216, 0.51)",
+              data: [
+                x.gifted_students_white,
+                x.gifted_students_black ,
+                x.gifted_students_hispanic,
+                x.gifted_students_asian,
+                x.gifted_students_american_indian,
+                x.gifted_students_native_hawaiian,
+                x.gifted_students_multi_race
+              ],
+            },
+            {
               label: "Suspensions",
               backgroundColor: "rgba(255,99,132,0.4)",
               borderColor: "rgba(255,99,132,1)",
               borderWidth: 1,
-              hoverBackgroundColor: "rgba(64,196,255,0.2)",
-              hoverBorderColor: "rgba(64,196,255,1)",
+              hoverBackgroundColor: "rgba(255,99,132,0.4)",
+              hoverBorderColor: "rgba(255,99,132,1)",
               data: [
                 (x.inhouse_suspension_white +  x.single_suspension_white + x.multi_suspension_white),
                 (x.inhouse_suspension_black +  x.single_suspension_black + x.multi_suspension_black),
@@ -160,6 +191,7 @@ app.controller('myCtrl', function($scope,$http,$state) {
                 (x.inhouse_suspension_multi_race +  x.single_suspension_multi_race + x.multi_suspension_multi_race)
               ],
             }
+            
           ]
       };
      var ctx = document.getElementById("race-chart");

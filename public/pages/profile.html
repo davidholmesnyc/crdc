@@ -59,10 +59,21 @@
    <div class="card-panel">
       <div class="stat-text">{{diversetyPercentage}}% of students in this school are minorities</div>
    </div>
-   <div class="card-panel">
+  <div class="card-panel">
       <div class="stat-text">{{ most_likely.value | number:2}}%  of <b>{{ most_likely.key }} students</b> was suspended this year - highest in the school </div>
    </div>
    <div class="card-panel">
-      <div class="stat-text">{{ least_likey.value | number:2}}% of <b>{{ least_likey.key }} students</b> was suspended this year - least in the school </div>
+      <div class="stat-text">{{ least_likey.value | number:2}}% of <b>{{ least_likey.key }} students</b> was suspended this year - lowest in the school </div>
    </div>
+  <div class="card-panel">
+      <div class="stat-text">
+        {{ gifted_students.value | number:2 }}% <b>{{ gifted_students.key }} students</b> are in gifted programs - highest in the school
+      </div>
+   </div>
+  <div class="card-panel">
+      <div class="stat-text">
+        {{ least_gifted_students.value | number:2 }}% <b>{{ least_gifted_students.key }} students</b> are in gifted programs - lowest in the school
+      </div>
+   </div>
+   <div style="color:grey">* All insight data is normalized to their enrolled race count. For example asian insights are calculated towards asian enrolled count. Least likely insights don't contain insights for zero count. For example if no native indian was suspended then it won't count towards least likely.
 </div>

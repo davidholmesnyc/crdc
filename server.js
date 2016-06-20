@@ -105,6 +105,7 @@ app.get('/search', function(req, res) {
   select(knex.raw(helper.all_races_query("SCH_DISCWODIS_MULTOOS","multi_suspension"))).    
   select(knex.raw(helper.all_races_query("SCH_DISCWODIS_SINGOOS","single_suspension"))).    
   select(knex.raw(helper.all_races_query("SCH_DISCWODIS_ISS","inhouse_suspension"))).     
+  select(knex.raw(helper.all_races_query("SCH_GTENR","gifted_students"))).     
   select(knex.raw(" cast(data->>'TOT_DISCWODIS_ISS_M' as int) + cast(data->>'TOT_DISCWODIS_ISS_F' as int) + cast(data->>'TOT_PSDISC_MULTOOS_M' as int) + cast(data->>'TOT_PSDISC_MULTOOS_F' as int) + cast(data->>'TOT_DISCWDIS_ISS_IDEA_M' as int) + cast(data->>'TOT_DISCWDIS_ISS_IDEA_F' as int) + cast(data->>'TOT_DISCWDIS_MULTOOS_IDEA_M' as int) + cast(data->>'TOT_DISCWDIS_MULTOOS_IDEA_F' as int) as total_suspended")).
   select(knex.raw("cast(data->>'SCH_ENR_HI_M' as int) + cast(data->>'SCH_ENR_HI_F' as int) + cast(data->>'SCH_ENR_AM_M' as int) + cast(data->>'SCH_ENR_AM_F' as int) + cast(data->>'SCH_ENR_AS_M' as int) + cast(data->>'SCH_ENR_AS_F' as int) + cast(data->>'SCH_ENR_HP_M' as int) + cast(data->>'SCH_ENR_HP_F' as int) + cast(data->>'SCH_ENR_BL_M' as int) + cast(data->>'SCH_ENR_BL_F' as int) + cast(data->>'SCH_ENR_TR_M' as int) + cast(data->>'SCH_ENR_TR_F' as int) as total_miniorities")).
   from('crcd').
