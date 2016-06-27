@@ -63,7 +63,19 @@ var helper = {
       'multi race':helper.per( x[column_name+'_multi_race'], x.enrolled_multi_race),
     }
     return helper.sortObject(races)
-  }
+  },
+  'races_list':function (x,column_name){
+    var races = {
+      
+      'Black':x.enrolled_black,
+      'Hispanic':x.enrolled_hispanic,
+      'Asian': x.enrolled_asian,
+      'American Indian': x.enrolled_american_indian,
+      'Native Hawaiian':x.enrolled_native_hawaiian,
+      'Multi Race':x.enrolled_multi_race,
+    }
+    return helper.sortObject(races)
+  },
 }
 // angular controller
 app.controller('myCtrl', function($scope,$http,$state) {
@@ -120,6 +132,50 @@ app.controller('myCtrl', function($scope,$http,$state) {
     }
 
   }
+
+  function createPieChart(id,data){
+    var ctx = document.getElementById(id);
+    var labels = []
+    var new_data = []
+    for(var b in data){
+        labels.push(data[b].key)
+        new_data.push(data[b].value.toFixed(2))
+    }
+    var data = {
+        labels:labels,
+        datasets: [
+            {
+                data: new_data,
+                backgroundColor: [
+                   "#FF6384",
+                   "#663300",
+                   "#FFCE56",
+                   "#cbcace",
+                   "#009900"
+                ],
+                hoverBackgroundColor: [
+                   "#FF6384",
+                   "#663300",
+                   "#FFCE56",
+                   "#cbcace",
+                   "#009900"
+                ]
+            }]
+    };
+    // For a pie chart
+    var myPieChart = new Chart(ctx,{
+        type: 'pie',
+        data: data,
+        options:{
+          'position':'left',
+          'legend':{
+            'position':'bottom',
+            'display':false
+          }
+        }
+        
+    });
+  }
     $scope.showProfile = function(x){
       scroll(0,0)
   
@@ -128,6 +184,8 @@ app.controller('myCtrl', function($scope,$http,$state) {
       $scope.x = x 
       $scope.most_likely = helper.least_likely(likely)[0]
       var find_gifted_students_insights = helper.find_insights(x,'gifted_students')
+      var races_insights = helper.find_insights(x,'enrolled')
+      console.log("race-insight",races_insights)
       $scope.gifted_students = find_gifted_students_insights[0]
       $scope.least_gifted_students = helper.least_likely(find_gifted_students_insights).slice(-1)[0]
       $scope.least_likey = helper.least_likely(likely).slice(-1)[0]
@@ -135,8 +193,9 @@ app.controller('myCtrl', function($scope,$http,$state) {
       $scope.modal = {}
       $scope.modal.schoolName = x.school_name
       $scope.modal.location = x.city+","+x.state
+      $scope.absent_teachers = helper.per(x.absent_teachers, x.total_teachers)
       //$('#modal1').showProfile();
-      
+
       var data = {
           labels: ["White", "Black", "Hispanic", "Asian", "American Indian", "Native Hawaiian", "Multi race"],
           datasets: [
@@ -198,7 +257,14 @@ app.controller('myCtrl', function($scope,$http,$state) {
       var myBarChart = new Chart(ctx, {
           type: 'bar',
           data: data
-      });  
+      });
+      
+     var races = helper.least_likely(likely)
+     $scope.highest_races = helper.races_list(x)[0]
+     createPieChart('pie-chart',races)
+     createPieChart('gifted-students-pie-chart',helper.find_insights(x,'gifted_students'))
+     //createPieChart('pie-chart',{labels:labels,data:data})
+     console.log("x",x)
     }
   
 });

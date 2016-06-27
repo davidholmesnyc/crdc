@@ -101,11 +101,20 @@ app.get('/search', function(req, res) {
   select(knex.raw("data->>'LEA_STATE' as state")).
   select(knex.raw("data->>'zipcode' as zipcode")).
   select(knex.raw("data->>'SCH_FTETEACH_TOT' as total_teachers")).  
+  select(knex.raw("data->>'SCH_FTETEACH_ABSENT' as absent_teachers")).  
+  select(knex.raw("data->>'SCH_FTESECURITY_IND' as security")).  
+  select(knex.raw("data->>'SCH_FTETEACH_FY' as first_year_teachers")).  
+  select(knex.raw("data->>'SCH_FTECOUNSELORS' as counselors")).  
+  select(knex.raw("data->>'SCH_CORPINSTANCES_IND' as corporal_punishment")).  
   select(knex.raw(helper.all_races_query("SCH_ENR","enrolled"))). 
   select(knex.raw(helper.all_races_query("SCH_DISCWODIS_MULTOOS","multi_suspension"))).    
   select(knex.raw(helper.all_races_query("SCH_DISCWODIS_SINGOOS","single_suspension"))).    
   select(knex.raw(helper.all_races_query("SCH_DISCWODIS_ISS","inhouse_suspension"))).     
   select(knex.raw(helper.all_races_query("SCH_GTENR","gifted_students"))).     
+  select(knex.raw(helper.all_races_query("SCH_HBDISCIPLINED_RAC","bullied_or_harrassed_students"))).     
+  select(knex.raw(helper.all_races_query("SCH_DISCWODIS_ARR","arrested"))).     
+  select(knex.raw(helper.all_races_query("SCH_DISCWODIS_REF","ref_arrested"))).     
+ 
   select(knex.raw(" cast(data->>'TOT_DISCWODIS_ISS_M' as int) + cast(data->>'TOT_DISCWODIS_ISS_F' as int) + cast(data->>'TOT_PSDISC_MULTOOS_M' as int) + cast(data->>'TOT_PSDISC_MULTOOS_F' as int) + cast(data->>'TOT_DISCWDIS_ISS_IDEA_M' as int) + cast(data->>'TOT_DISCWDIS_ISS_IDEA_F' as int) + cast(data->>'TOT_DISCWDIS_MULTOOS_IDEA_M' as int) + cast(data->>'TOT_DISCWDIS_MULTOOS_IDEA_F' as int) as total_suspended")).
   select(knex.raw("cast(data->>'SCH_ENR_HI_M' as int) + cast(data->>'SCH_ENR_HI_F' as int) + cast(data->>'SCH_ENR_AM_M' as int) + cast(data->>'SCH_ENR_AM_F' as int) + cast(data->>'SCH_ENR_AS_M' as int) + cast(data->>'SCH_ENR_AS_F' as int) + cast(data->>'SCH_ENR_HP_M' as int) + cast(data->>'SCH_ENR_HP_F' as int) + cast(data->>'SCH_ENR_BL_M' as int) + cast(data->>'SCH_ENR_BL_F' as int) + cast(data->>'SCH_ENR_TR_M' as int) + cast(data->>'SCH_ENR_TR_F' as int) as total_miniorities")).
   from('crcd').

@@ -30,12 +30,13 @@
             </li>
             <li class="search">
                <div class="search-wrapper card">
-                  <input id="search" placeholder="Zip Code" ng-model="zipcode" value="{{zipcode}}">
+                  <input id="search" placeholder="Zip Code" type="number" maxlength="5" ng-model="zipcode" value="{{zipcode}}">
                   <div class="search-results"></div>
                </div>
                <div class="input-field " style="margin-right: 11px;margin-left: 13px;">
                   <select style="display:block" ng-model="schoolType">
                      <option value="" selected>All Schools</option>
+                     <option value="elem">Pre schools</option>
                      <option value="elem">Elementary Schools</option>
                      <option value="middle">Middle School</option>
                      <option value="high">High School</option>

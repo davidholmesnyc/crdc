@@ -220,4 +220,13 @@ box-shadow: 0 2px 5px 0 rgb(36, 192, 239),0 2px 10px 0 rgb(76, 247, 226);
  }
  }
  
- 
+ .card-stat{
+  box-shadow: 0 2px 5px 0 rgba(0,0,0,0),0 2px 10px 0 rgba(0,0,0,0);
+  font-size: 22px;
+ }
+ .card-stat-red{
+  border-left: 3px solid #900808;
+ }
+ .card-stat-blue{
+  border-left: 3px solid #0166fd;
+ }

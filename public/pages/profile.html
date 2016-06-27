@@ -59,21 +59,86 @@
    <div class="card-panel">
       <div class="stat-text">{{diversetyPercentage}}% of students in this school are minorities</div>
    </div>
-  <div class="card-panel">
-      <div class="stat-text">{{ most_likely.value | number:2}}%  of <b>{{ most_likely.key }} students</b> was suspended this year - highest in the school </div>
+</div>
+<div class="card-panel">
+   <div class="card-header">Suspension breakdown</div>
+   <div class="row">
+      <div class="col 5">
+        <canvas id="pie-chart" ></canvas>
+      </div>
+      <div class="col 7">
+        <div class="card-panel card-stat card-stat-red">
+            <div class="stat-text">{{ most_likely.value | number:2}}%  of <b>{{ most_likely.key }} students</b> was suspended this year - highest in the school </div>
+         </div>
+         <div class="card-panel card-stat card-stat-blue">
+            <div class="stat-text">{{ least_likey.value | number:2}}% of <b>{{ least_likey.key }} students</b> was suspended this year - lowest in the school </div>
+         </div>
+      </div>
    </div>
+</div>
+<div id="stats">
    <div class="card-panel">
-      <div class="stat-text">{{ least_likey.value | number:2}}% of <b>{{ least_likey.key }} students</b> was suspended this year - lowest in the school </div>
+      <div class="stat-text"><strong>{{highest_races.key}} students</strong> account for a majority of minorities</div>
    </div>
-  <div class="card-panel">
-      <div class="stat-text">
-        {{ gifted_students.value | number:2 }}% <b>{{ gifted_students.key }} students</b> are in gifted programs - highest in the school
+</div>
+<div class="card-panel">
+   <div class="card-header">Gifted students breakdown</div>
+   <div class="row">
+      <div class="col 5">
+        <canvas id="gifted-students-pie-chart" ></canvas>
+      </div>
+      <div class="col 7">
+        <div class="card-panel card-stat card-stat-red">
+            <div class="stat-text">{{ gifted_students.value | number:2 }}% <b>{{ gifted_students.key }} students</b> are in gifted programs - highest in the school </div>
+         </div>
+         <div class="card-panel card-stat card-stat-blue">
+            <div class="stat-text">  {{ least_gifted_students.value | number:2 }}% <b>{{ least_gifted_students.key }} students</b> are in gifted programs - lowest in the school </div>
+         </div>
       </div>
    </div>
-  <div class="card-panel">
+</div>
+
+
+<div id="stats" >
+   <div class="card-panel">
+      <div class="stat-text">There are <strong>{{x.total_teachers | number:0}} teachers </strong> in this school</div>
+   </div>
+
+   <div class="card-panel hide">
       <div class="stat-text">
-        {{ least_gifted_students.value | number:2 }}% <b>{{ least_gifted_students.key }} students</b> are in gifted programs - lowest in the school
+        <strong> {{x.first_year_teachers}} teacher </strong> are new in this school
       </div>
    </div>
+
+   <div class="card-panel">
+      <div class="stat-text"><strong>{{absent_teachers | number:0}}% of teachers </strong> was absent more than 10 times this school year</div>
+   </div>
+
+
+   <div class="card-panel">
+      <div class="stat-text">There are <strong>{{x.counselors | number:0}} counselors </strong> in this school for {{x.total_students | number:0}} students </div>
+   </div>
+
+   <div class="card-panel">
+      <div class="stat-text">
+      There 
+      <strong ng-if="x.security == 'YES'">are security guards</strong> 
+      <strong ng-if="x.security != 'YES'">are NOT security guards</strong> 
+      in this school
+      </div>
+   </div>
+
+
+   <div class="card-panel">
+      <div class="stat-text">
+      There 
+      <strong ng-if="x.corporal_punishment == 'YES'">is corporal punishment</strong> 
+      <strong ng-if="x.corporal_punishment != 'YES'">is NOT corporal punishment</strong> 
+      in this school
+      </div>
+   </div>
+
+
+
    <div style="color:grey">* All insight data is normalized to their enrolled race count. For example asian insights are calculated towards asian enrolled count. Least likely insights don't contain insights for zero count. For example if no native indian was suspended then it won't count towards least likely.
 </div>
