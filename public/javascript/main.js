@@ -77,6 +77,16 @@ var helper = {
     return helper.sortObject(races)
   },
 }
+
+var colors = {
+  'black':'#663300',
+  'hispanic':'#ffce56',
+  'asian':'#ff6384',
+  'american indian':'#ca6000',
+  'native hawaiian':'#9fe209',
+  'multi race':'#09e2c7',
+  'white':'#fff2d1'
+}
 // angular controller
 app.controller('myCtrl', function($scope,$http,$state) {
   console.log("state",$state)
@@ -137,29 +147,22 @@ app.controller('myCtrl', function($scope,$http,$state) {
     var ctx = document.getElementById(id);
     var labels = []
     var new_data = []
+    var race_colors = []
     for(var b in data){
         labels.push(data[b].key)
         new_data.push(data[b].value.toFixed(2))
+        race_colors.push(colors[data[b].key.toLowerCase()])
+
     }
+    console.log("labels",labels)
+    console.log("race_colors",race_colors)
     var data = {
         labels:labels,
         datasets: [
             {
                 data: new_data,
-                backgroundColor: [
-                   "#FF6384",
-                   "#663300",
-                   "#FFCE56",
-                   "#cbcace",
-                   "#009900"
-                ],
-                hoverBackgroundColor: [
-                   "#FF6384",
-                   "#663300",
-                   "#FFCE56",
-                   "#cbcace",
-                   "#009900"
-                ]
+                backgroundColor: race_colors,
+                hoverBackgroundColor: race_colors
             }]
     };
     // For a pie chart
@@ -178,14 +181,11 @@ app.controller('myCtrl', function($scope,$http,$state) {
   }
     $scope.showProfile = function(x){
       scroll(0,0)
-  
-
       var likely = helper.more_likely(x)
-      $scope.x = x 
-      $scope.most_likely = helper.least_likely(likely)[0]
       var find_gifted_students_insights = helper.find_insights(x,'gifted_students')
       var races_insights = helper.find_insights(x,'enrolled')
-      console.log("race-insight",races_insights)
+      $scope.x = x 
+      $scope.most_likely = helper.least_likely(likely)[0]
       $scope.gifted_students = find_gifted_students_insights[0]
       $scope.least_gifted_students = helper.least_likely(find_gifted_students_insights).slice(-1)[0]
       $scope.least_likey = helper.least_likely(likely).slice(-1)[0]
@@ -254,12 +254,13 @@ app.controller('myCtrl', function($scope,$http,$state) {
           ]
       };
      var ctx = document.getElementById("race-chart");
-      var myBarChart = new Chart(ctx, {
+     var races = helper.least_likely(likely)
+     var myBarChart = new Chart(ctx, {
           type: 'bar',
           data: data
       });
       
-     var races = helper.least_likely(likely)
+     
      $scope.highest_races = helper.races_list(x)[0]
      createPieChart('pie-chart',races)
      createPieChart('gifted-students-pie-chart',helper.find_insights(x,'gifted_students'))
