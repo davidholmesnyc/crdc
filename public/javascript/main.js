@@ -103,6 +103,9 @@ app.controller('home', function($scope,$http,$state) {
     }
     $state.go('results',data)
   }
+  $scope.openNav = function(){
+    $('.button-collapse').sideNav('show');
+  }
   $scope.profile = function(x){
     $state.go('profile',{
       x:x,
@@ -257,7 +260,7 @@ $(function(){
   $('.button-collapse').sideNav({
         menuWidth: 300, // Default is 240
         edge: 'left', // Choose the horizontal origin
-        closeOnClick: false // Closes side-nav on <a> clicks, useful for Angular/Meteor
+        closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
       }
     );
 
