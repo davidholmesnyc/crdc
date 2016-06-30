@@ -76,73 +76,48 @@ var helper = {
     }
     return helper.sortObject(races)
   },
+  'colors':{
+    'black':'#663300',
+    'hispanic':'#ffce56',
+    'asian':'#ff6384',
+    'american indian':'#ca6000',
+    'native hawaiian':'#9fe209',
+    'multi race':'#09e2c7',
+    'white':'#fff2d1'
+  }
 }
 
-var colors = {
-  'black':'#663300',
-  'hispanic':'#ffce56',
-  'asian':'#ff6384',
-  'american indian':'#ca6000',
-  'native hawaiian':'#9fe209',
-  'multi race':'#09e2c7',
-  'white':'#fff2d1'
-}
-// angular controller
-app.controller('myCtrl', function($scope,$http,$state) {
-  console.log("state",$state)
-  $scope.zipcode = $state.params.zipcode
-  console.log("scope",$scope.zipcode)
-  $scope.search = function(zipcode,schoolType){
-    $scope.loading = true;
-    console.log("zip",$scope.zipcode)
-    if(helper.ifMobile){
-      $('.button-collapse').sideNav('hide')
-    }
-    var whereParams =''
-    console.log("selected",$scope.schoolType)
-    if($scope.schoolType !="" && $scope.schoolType !=undefined){
-      whereParams += '&schoolType='+$scope.schoolType
-    }
-
-
-    $http.get(search_url+$state.params.zipCode+whereParams).then(function(response) {
-        $scope.myData = response.data;
-        $scope.loading = false;
-    });
-  }
-  if($state.current.name === 'profile'){
-    $scope.profile()
-  }
-  if($state.current.name === 'results'){
-    $scope.search()
-  }
+app.controller('home', function($scope,$http,$state) {
   $scope.buttonSearch = function(){
     var data = {zipCode:$scope.zipcode}
-     
     if($scope.schoolType !="" && $scope.schoolType !=undefined && $scope.schoolType !='all'){
      data['schoolType'] = $scope.schoolType
     }
     $state.go('results',data)
   }
   $scope.profile = function(x){
-    $scope.loading = true;
-    
-    if(x === undefined){
-      $http.get(search_url+$state.params.zipcode+"&school_id="+$state.params.school_id).then(function(response) {
-          $scope.loading = false;
-          console.log("test",response.data[0])
-          $scope.showProfile(response.data[0])
-      });
-    }else{
-      $state.go('profile',{
-        x:x,
-        zipcode:x.zipcode,
-        school_id:x.school_id
-      })
-    }
-
+    $state.go('profile',{
+      x:x,
+      zipcode:x.zipcode,
+      school_id:x.school_id
+    })
   }
+});
 
+app.controller('results', function($scope,$http,$state) {
+  var whereParams = ''
+  $scope.zipcode = $state.params.zipcode
+  if($scope.schoolType !="" && $scope.schoolType !=undefined)
+  {
+    whereParams += '&schoolType='+$scope.schoolType
+  }
+  $http.get(search_url+$state.params.zipCode+whereParams).then(function(response) {
+      $scope.myData = response.data;
+      $scope.loading = false;
+  });
+})
+
+app.controller('profile', function($scope,$http,$state) {
   function createPieChart(id,data){
     var ctx = document.getElementById(id);
     var labels = []
@@ -151,11 +126,9 @@ app.controller('myCtrl', function($scope,$http,$state) {
     for(var b in data){
         labels.push(data[b].key)
         new_data.push(data[b].value.toFixed(2))
-        race_colors.push(colors[data[b].key.toLowerCase()])
+        race_colors.push(helper.colors[data[b].key.toLowerCase()])
 
     }
-    console.log("labels",labels)
-    console.log("race_colors",race_colors)
     var data = {
         labels:labels,
         datasets: [
@@ -179,98 +152,98 @@ app.controller('myCtrl', function($scope,$http,$state) {
         
     });
   }
-    $scope.showProfile = function(x){
-      scroll(0,0)
-      var likely = helper.more_likely(x)
-      var find_gifted_students_insights = helper.find_insights(x,'gifted_students')
-      var races_insights = helper.find_insights(x,'enrolled')
-      $scope.x = x 
-      $scope.most_likely = helper.least_likely(likely)[0]
-      $scope.gifted_students = find_gifted_students_insights[0]
-      $scope.least_gifted_students = helper.least_likely(find_gifted_students_insights).slice(-1)[0]
-      $scope.least_likey = helper.least_likely(likely).slice(-1)[0]
-      $scope.diversetyPercentage = Math.abs((((x.total_students - x.total_miniorities) / x.total_students) * 100) - 100).toFixed(0)
-      $scope.modal = {}
-      $scope.modal.schoolName = x.school_name
-      $scope.modal.location = x.city+","+x.state
-      $scope.absent_teachers = helper.per(x.absent_teachers, x.total_teachers)
-      //$('#modal1').showProfile();
-
-      var data = {
-          labels: ["White", "Black", "Hispanic", "Asian", "American Indian", "Native Hawaiian", "Multi race"],
-          datasets: [
-            {
-                label: "All Students",
-                backgroundColor: "rgba(64,196,255,0.2)",
-                borderColor: "rgba(64,196,255,1)",
-                borderWidth: 1,
-                hoverBackgroundColor: "rgba(64,196,255,0.2)",
-                hoverBorderColor: "rgba(64,196,255,1)",
-                data: [
-                  x.enrolled_white , 
-                  x.enrolled_black, 
-                  x.enrolled_hispanic,
-                  x.enrolled_asian,
-                  x.enrolled_american_indian,
-                  x.enrolled_native_hawaiian,
-                  x.enrolled_multi_race
-                ],
-            },
-            {
-              label: "Gifted Studens",
-              backgroundColor: "rgba(223, 240, 216, 0.51)",
-              borderColor: "rgba(223, 240, 216, 0.51)",
-              borderWidth: 1,
-              hoverBackgroundColor: "rgba(223, 240, 216, 0.51)",
-              hoverBorderColor: "rgba(223, 240, 216, 0.51)",
-              data: [
-                x.gifted_students_white,
-                x.gifted_students_black ,
-                x.gifted_students_hispanic,
-                x.gifted_students_asian,
-                x.gifted_students_american_indian,
-                x.gifted_students_native_hawaiian,
-                x.gifted_students_multi_race
-              ],
-            },
-            {
-              label: "Suspensions",
-              backgroundColor: "rgba(255,99,132,0.4)",
-              borderColor: "rgba(255,99,132,1)",
-              borderWidth: 1,
-              hoverBackgroundColor: "rgba(255,99,132,0.4)",
-              hoverBorderColor: "rgba(255,99,132,1)",
-              data: [
-                (x.inhouse_suspension_white +  x.single_suspension_white + x.multi_suspension_white),
-                (x.inhouse_suspension_black +  x.single_suspension_black + x.multi_suspension_black),
-                (x.inhouse_suspension_hispanic +  x.single_suspension_hispanic + x.multi_suspension_hispanic),
-                (x.inhouse_suspension_asian +  x.single_suspension_asian + x.multi_suspension_asian),
-                (x.inhouse_suspension_american_indian +  x.single_suspension_american_indian + x.multi_suspension_american_indian),
-                (x.inhouse_suspension_native_hawaiian +  x.single_suspension_native_hawaiian + x.multi_suspension_native_hawaiian),
-                (x.inhouse_suspension_multi_race +  x.single_suspension_multi_race + x.multi_suspension_multi_race)
-              ],
-            }
-            
-          ]
-      };
+  $scope.showProfile =  function(x){
+     scroll(0,0)
+     var likely = helper.more_likely(x)
+     var find_gifted_students_insights = helper.find_insights(x,'gifted_students')
+     var races_insights = helper.find_insights(x,'enrolled')
      var ctx = document.getElementById("race-chart");
      var races = helper.least_likely(likely)
-     var myBarChart = new Chart(ctx, {
-          type: 'bar',
-          data: data
-      });
-      
-     
+     var enrolled_chart 
+     $scope.x = x 
+     $scope.most_likely = helper.least_likely(likely)[0]
+     $scope.gifted_students = find_gifted_students_insights[0]
+     $scope.least_gifted_students = helper.least_likely(find_gifted_students_insights).slice(-1)[0]
+     $scope.least_likey = helper.least_likely(likely).slice(-1)[0]
+     $scope.diversetyPercentage = Math.abs((((x.total_students - x.total_miniorities) / x.total_students) * 100) - 100).toFixed(0)
+     $scope.modal = {}
+     $scope.modal.schoolName = x.school_name
+     $scope.modal.location = x.city+","+x.state
+     $scope.absent_teachers = helper.per(x.absent_teachers, x.total_teachers)
      $scope.highest_races = helper.races_list(x)[0]
-     createPieChart('pie-chart',races)
-     createPieChart('gifted-students-pie-chart',helper.find_insights(x,'gifted_students'))
-     //createPieChart('pie-chart',{labels:labels,data:data})
-     console.log("x",x)
-    }
-  
-});
+     var data = {
+         labels: ["White", "Black", "Hispanic", "Asian", "American Indian", "Native Hawaiian", "Multi race"],
+         datasets: [
+           {
+               label: "All Students",
+               backgroundColor: "rgba(64,196,255,0.2)",
+               borderColor: "rgba(64,196,255,1)",
+               borderWidth: 1,
+               hoverBackgroundColor: "rgba(64,196,255,0.2)",
+               hoverBorderColor: "rgba(64,196,255,1)",
+               data: [
+                 x.enrolled_white , 
+                 x.enrolled_black, 
+                 x.enrolled_hispanic,
+                 x.enrolled_asian,
+                 x.enrolled_american_indian,
+                 x.enrolled_native_hawaiian,
+                 x.enrolled_multi_race
+               ],
+           },
+           {
+             label: "Gifted Studens",
+             backgroundColor: "rgba(223, 240, 216, 0.51)",
+             borderColor: "rgba(223, 240, 216, 0.51)",
+             borderWidth: 1,
+             hoverBackgroundColor: "rgba(223, 240, 216, 0.51)",
+             hoverBorderColor: "rgba(223, 240, 216, 0.51)",
+             data: [
+               x.gifted_students_white,
+               x.gifted_students_black ,
+               x.gifted_students_hispanic,
+               x.gifted_students_asian,
+               x.gifted_students_american_indian,
+               x.gifted_students_native_hawaiian,
+               x.gifted_students_multi_race
+             ],
+           },
+           {
+             label: "Suspensions",
+             backgroundColor: "rgba(255,99,132,0.4)",
+             borderColor: "rgba(255,99,132,1)",
+             borderWidth: 1,
+             hoverBackgroundColor: "rgba(255,99,132,0.4)",
+             hoverBorderColor: "rgba(255,99,132,1)",
+             data: [
+               (x.inhouse_suspension_white +  x.single_suspension_white + x.multi_suspension_white),
+               (x.inhouse_suspension_black +  x.single_suspension_black + x.multi_suspension_black),
+               (x.inhouse_suspension_hispanic +  x.single_suspension_hispanic + x.multi_suspension_hispanic),
+               (x.inhouse_suspension_asian +  x.single_suspension_asian + x.multi_suspension_asian),
+               (x.inhouse_suspension_american_indian +  x.single_suspension_american_indian + x.multi_suspension_american_indian),
+               (x.inhouse_suspension_native_hawaiian +  x.single_suspension_native_hawaiian + x.multi_suspension_native_hawaiian),
+               (x.inhouse_suspension_multi_race +  x.single_suspension_multi_race + x.multi_suspension_multi_race)
+             ],
+           }
+           
+         ]
+     };
+    enrolled_chart = new Chart(ctx, { type: 'bar', data: data });
+    createPieChart('pie-chart',races)
+    createPieChart('gifted-students-pie-chart',helper.find_insights(x,'gifted_students'))
+  }
 
-
+  if($state.params.x !=null)
+  {
+    $scope.showProfile($state.params.x)
+  }
+  else
+  {
+    $http.get(search_url+$state.params.zipcode+"&school_id="+$state.params.school_id).then(function(response) {
+      $scope.showProfile(response.data[0])
+    })
+  }
+})
 
 $(function(){
   $('.modal-trigger').leanModal();
@@ -280,11 +253,11 @@ $(function(){
         closeOnClick: false // Closes side-nav on <a> clicks, useful for Angular/Meteor
       }
     );
-  
 })
 
+
 app.config(function($stateProvider, $urlRouterProvider) {
-//
+
 // For any unmatched url, redirect to /state1
 $urlRouterProvider.otherwise("/");
 //
@@ -294,12 +267,12 @@ $stateProvider
   .state('home', {
     url: "/",
     templateUrl: "pages/home.html",
-    controller: 'myCtrl'
+    controller: 'home'
   })
   .state('results', {
     url: "/results/:zipCode?schoolType",
     templateUrl: "pages/results.html",
-    controller:'myCtrl'
+    controller:'results'
   })
   .state('profile', {
     url: "/profile/:zipcode/:school_id",
@@ -307,6 +280,6 @@ $stateProvider
       x:null
     },
     templateUrl: "pages/profile.html",
-    controller:'myCtrl'
+    controller:'profile'
   });
 });
