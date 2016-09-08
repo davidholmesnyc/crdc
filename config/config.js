@@ -6,7 +6,7 @@ module.exports = {
   'DB_DATABASE':'postgres',
   'DB_SCHEMA':'education',
   'DB_TABLE':'crcd',
-  'CRCD_CSV_FILE':'CRDC2013_14.csv',
+  'CRCD_CSV_FILE':'CRDC_2013_14_CSV/CRDC2013_14_SCH.csv',
   'CRCD_JSON_FILE':'crcd.json',
   'CRCD_DOWNLOAD_URL':'http://catalog.data.gov/download/crdc201314csv.zip',
   'CRCD_DOWNLOAD_FILE_LOCATION':'/files/',
