@@ -93,7 +93,7 @@ app.get('/search', function(req, res) {
     whereParams.push(req.query.school_id)
   }
   // run the query 
-  knex.withSchema('education').
+  var run = knex.withSchema('education').
   select(knex.raw("data->>'SCH_NAME' as School_Name")).
   select(knex.raw("data->>'SCHID' as School_ID")).
   select(knex.raw("cast(data->>'TOT_ENR_F' as int) + cast(data->>'TOT_ENR_M' as int) as total_students")).
