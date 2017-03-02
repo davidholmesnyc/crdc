@@ -1,6 +1,28 @@
-<a href="#" class="results-link">
-  <div class="card-panel" ng-click="openNav()">
-    <font size="3"> Search by zipcode to see school results</font>
-  </div>
-</a>
-
+<section class="home bg-img-1" id="home">
+        <div class="bg-overlay "></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <div class="home-wrapper">
+                        <h1 class="text-uppercase">How diverse is your school?</h1>
+                        <p class="hide">Find out today by using our <strong>Free</strong> tool</p>
+                        <nav >
+                          <div class="nav-wrapper">
+                            <form>
+                              <div class="input-field">
+                                <input id="search" type="search" required placeholder="Enter school,zip or city to search for schools" style="height:64px;" ng-model="zipcode">
+                                <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+                                <i class="material-icons">close</i>
+                              </div>
+                            </form>
+                          </div>
+                        </nav>
+                        <br/>
+                        <center>
+                        <a class="waves-effect waves-light btn" ng-click="buttonSearch()"><i class="material-icons right">search</i>Search</a>
+                        </center>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>

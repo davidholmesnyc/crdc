@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
    <head>
-      <title>Student Diversity Report -- Find out if your school is diverse</title>
+      <title>Student Diversity Report -- Free interactive report to find out if your school is diverse or not</title>
       <script src="javascript/angular.min.js"></script>
       <script src="javascript/angular-ui-router.min.js"></script>
       <!-- Compiled and minified CSS -->
@@ -15,34 +15,100 @@
       <script src="javascript/Chart.bundle.min.js"></script>
       <script src="javascript/main.js"></script>
       <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <meta name="viewport" content="initial-scale=1, maximum-scale=1">
    </head>
    <body ng-app="crcd" ng-controller="home">
    <nav>
      <div class="nav-wrapper">
-       <a href="#" class="brand-logo">School Diversity Report</a>
-       <ul id="nav-mobile" class="right hide-on-med-and-down">
-         <li><a href="sass.html">Search</a></li>
-         <li><a href="badges.html">Maps</a></li>
-         <li><a href="collapsible.html">About</a></li>
+       <img src="./img/school-icon-yellow1.png" class="logo-image"><a href="#" class="brand-logo">  School Diversity Report</a>
+       <ul id="nav-mobile" class="right hide-on-med-and-down width-reset" style="    ">
+         <li><a href="/">Home</a></li>
+         <li><a href="#/results/">Search</a></li>
+         <li><a href="#/maps">Maps</a></li>
+         <li><a href="#/about">About</a></li>
        </ul>
      </div>
    </nav>
          
       <style>
+      body{
+         font-family: 'Raleway', sans-serif !important;
+      }
       nav{
          color:black;
       }
       .side-nav{
          top: 71px;
       }
+      nav .brand-logo {
+          position: absolute;
+          color: #000;
+          display: inline-block;
+          font-size: 20px;
+          padding: 0;
+          margin-left: 10px;
+          white-space: nowrap;
+      }
+      .logo-image{
+          height: 50px;
+          margin-top: 8px;
+          margin-left: 16px;
+      }
+      nav ul a {
+          transition: background-color .3s;
+          font-size: 18px;
+          color: #000;
+          display: inline-block;
+          padding: 0 15px;
+          cursor: pointer;
+      }
+      .width-reset{
+       width: auto !important;  
+      }
+
+      .home-wrapper {
+        color: #ffffff;
+        padding: 150px 0px 150px 0px;
+      }
+      .home-wrapper p {
+        line-height: 26px;
+        margin-top: 30px;
+        color: #eee;
+        margin-bottom: 40px;
+        font-size: 16px;
+      }
+      .video-btn {
+        color: #ffffff !important;
+        letter-spacing: 1px;
+        padding-top: 20px;
+        outline: none !important;
+      }
+      .video-btn i {
+        margin-right: 7px;
+      }
+      .bg-img-1 {
+        background: url("http://www.quotemaster.org/images/a8/a8ed25cfbe437f3760d576cc26367080.jpg");
+        background-size: cover;
+        position: relative;
+      }
+      .bg-overlay {
+          background: rgba(0,0,0,0.25);
+          position: absolute;
+          height: 100%;
+          width: 100%;
+          top: 0;
+      }
+      .text-center{
+         position: relative;
+      }
       </style>
       <header>
         <div class="container">
             <a href="javascript:" data-activates="nav-mobile" class="button-collapse top-nav full hide-on-large-only"><i class="material-icons">menu</i></a>
          </div>
-         <ul id="nav-mobile" class="side-nav fixed" >
+         <ul id="nav-mobile" class="side-nav fixed hide" >
             <li class="logo">
                <a id="logo-container" href="#" class="brand-logo">
                <img src="./img/school-icon-yellow1.png">
@@ -71,12 +137,21 @@
             <li class="bold hide"><a href="about.html" class="waves-effect waves-teal">About</a></li>
          </ul>
       </header>
-      <main>
-         <div class="container">
+      <div ui-view></div>
+      <!--
+      <div class="row">
+
+        <div class="col s12 m4 l2"><p></p></div>
+        <div class="col s12 m4 l8">         
+        <div class="container">
          <div class="progress" ng-show="loading"><div class="indeterminate"></div></div>
          <div ui-view></div>
-         </div>
-      </main>
+         </div></div>
+        <div class="col s12 m4 l2"><p></p></div>
+      </div>
+   -->
+
+
       <script></script>
    </body>
 </html>
