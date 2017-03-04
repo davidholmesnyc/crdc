@@ -286,6 +286,45 @@ $stateProvider
     templateUrl: "pages/results.html",
     controller:'results'
   })
+  .state('maps', {
+    url: "/maps",
+    templateUrl: "pages/maps.html",
+    controller:function(){
+
+      Plotly.d3.csv('/data/states-total-students-vs-minorities.csv', function(err, rows){
+            function unpack(rows, key) {
+                return rows.map(function(row) { return row[key]; });
+            }
+        console.log(unpack(rows, 'postal'));
+       var data = [{
+                    type: 'choropleth',
+                    locationmode: 'USA-states',
+                    locations: unpack(rows, 'state'),
+                    z: unpack(rows, 'percent'),
+                    
+                    autocolorscale: false,
+                    colorscale:[ [0, 'rgb(255,0,0)'], [.5, 'rgb(83, 106, 194)'] , [1, 'rgb(0,0,255)']   ]
+                }];
+
+      console.log(data.locations);
+        var layout = {
+                title: '2013-2014 US Student Diversity Percentage',
+                geo:{
+                  scope: 'usa',
+                  countrycolor: 'rgb(255, 255, 255)',
+                  showland: true,
+                  landcolor: 'rgb(217, 217, 217)',
+                  showlakes: true,
+                  lakecolor: 'rgb(255, 255, 255)',
+                  subunitcolor: 'rgb(255, 255, 255)',
+                  lonaxis: {},
+                  lataxis: {}
+                }
+            };
+            Plotly.plot(student_diversity_by_state, data, layout, {showLink: false});
+        });
+    }
+  })
   .state('profile', {
     url: "/profile/:zipcode/:school_id",
     params:{
