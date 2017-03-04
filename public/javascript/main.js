@@ -92,7 +92,16 @@ var helper = {
   }
 }
 
+app.controller('nav', function($scope,$http,$state) {
+  var _url =$state.current.name
+$scope.current_url = $state.current.name
+$scope.state = $state
+//$scope.current_url = 'hi'
+  console.log("nav",$scope.current_url)
+
+})
 app.controller('home', function($scope,$http,$state) {
+ 
   $scope.buttonSearch = function(){
     if(helper.ifMobile()){
       $('.button-collapse').sideNav('hide');
@@ -113,6 +122,8 @@ app.controller('home', function($scope,$http,$state) {
       school_id:x.school_id
     })
   }
+
+
 });
 
 app.controller('results', function($scope,$http,$state) {

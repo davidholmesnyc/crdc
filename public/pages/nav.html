@@ -1,0 +1,9 @@
+     <div class="nav-wrapper" ng-controller="nav">
+       <img src="./img/school-icon-yellow1.png" class="logo-image"><a href="#" class="brand-logo">  School Diversity Report</a>
+       <ul id="nav-mobile" class="right hide-on-med-and-down width-reset"  >
+         <li><a href="/"  ng-class="{'navActive': state.current.name == 'home' }">Home</a></li>
+         <li><a href="#/results/"  ng-class="{'navActive': state.current.name == 'results' || state.current.name == 'profile'  }">Search</a></li>
+         <li><a href="#/maps" ng-class="{'navActive': state.current.name == 'maps'  }"">Maps</a></li>
+         <li><a href="#/about" ng-class="{'navActive': state.current.name == 'about' }">About</a></li>
+       </ul>
+     </div>
