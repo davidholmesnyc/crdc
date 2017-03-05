@@ -79,12 +79,14 @@ app.use(express.static('public'));
  }
 function search(term){
   var data = []
+
+
   autocomplete.forEach(function(a){
     var a = a.toLowerCase() 
     var q = term.toLowerCase()
-    if (a.indexOf(q)>-1) {
+    if (a.indexOf(q)!== -1) {
       var get_data_info = a.split("--")
-      console.log("get_data_info",get_data_info)
+      
       //2209 -- asbury elem sch -- albertville -- 35951
       data.push({
         value:a,
@@ -98,6 +100,30 @@ function search(term){
     }
 
   })
+  
+
+/*
+  for (var i = autocomplete.length - 1; i >= 0; i--) {
+     var a = autocomplete[i]
+     var a = a.toLowerCase() 
+     var q = term.toLowerCase()
+     if (a.indexOf(q) !== -1) {
+       var get_data_info = a.split("--")
+       //console.log("get_data_info",get_data_info)
+       //2209 -- asbury elem sch -- albertville -- 35951
+       data.push({
+         value:a,
+         data:{
+           school_id:trim1(get_data_info[0]),
+           school_name:trim1(get_data_info[1]),
+           school_city:trim1(get_data_info[2]),
+           zipcode:trim1(get_data_info[3]),
+          }
+       })
+     }
+   }
+*/
+
   return {
     // Query is not required as of version 1.2.5
     "query": "Unit",

@@ -124,7 +124,7 @@ app.controller('home', function($scope,$http,$state) {
   }
   $('#autocomplete').autocomplete({
       serviceUrl: '/autocomplete',
-      deferRequestBy:100,
+      //deferRequestBy:100,
       dataType:'json',
       lookupLimit:10,
       onSelect: function (suggestion) {
