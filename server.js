@@ -61,9 +61,65 @@ app.use(express.static('public'));
  * @return {[json]}      [returns results in json]
  * 
  */
+
+ var Autocomplete = require('autocomplete')
+ // Create the autocomplete object
+ var autocomplete = Autocomplete.connectAutocomplete();
+
+
+ var fs = require('fs')
+ var autocomplete
+ fs.readFile('public/data/autocomplete.csv', 'utf8', function (err,data) {
+   if (err) {
+     return console.log(err);
+   }
+   var turnDataIntoArray = data.split("\r\n")
+   var new_data = turnDataIntoArray
+   console.log(typeof new_data)
+    autocomplete = new_data
+});
+ function trim1 (str) {
+     return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+ }
+function search(term){
+  var data = []
+  autocomplete.forEach(function(a){
+    var a = a.toLowerCase() 
+    var q = term.toLowerCase()
+    if (a.indexOf(q)>-1) {
+      var get_data_info = a.split("--")
+      console.log("get_data_info",get_data_info)
+      //2209 -- asbury elem sch -- albertville -- 35951
+      data.push({
+        value:a,
+        data:{
+          school_id:trim1(get_data_info[0]),
+          school_name:trim1(get_data_info[1]),
+          school_city:trim1(get_data_info[2]),
+          zipcode:trim1(get_data_info[3]),
+         }
+      })
+    }
+
+  })
+  return {
+    // Query is not required as of version 1.2.5
+    "query": "Unit",
+    "suggestions":data.slice(0,10)
+}
+ 
+}
+
+app.get('/autocomplete', function(req, res) {
+  var q = req.query.query
+ // here results will be an array of key-value pairs 
+  res.send(JSON.stringify(search(q)))
+
+
+})
 app.get('/search', function(req, res) {
   // if zipcode 
-  if(req.query.zipcode !=undefined){
+  if(req.query.zipcode !=undefined && req.query.profileRequest == undefined){
     var geo = cities.zip_lookup(req.query.zipcode)
     var whereString = "data->>'LEA_STATE' =? and data->>'city' =? and data->>'zipcode' =? "
     var whereParams = [geo['state'],geo['city'],req.query.zipcode]
@@ -71,7 +127,12 @@ app.get('/search', function(req, res) {
     var whereString = "data->>'LEA_STATE' =? and data->>'city' =? "
     var whereParams = [req.query.state,req.query.city]
   }
-
+  if(req.query.profileRequest !=undefined){
+     var geo = cities.zip_lookup(req.query.zipcode)
+     console.log("geo",geo)
+     var whereString = "data->>'LEA_STATE' =? and data->>'city' =? and data->>'zipcode' =? and data->>'SCHID' =? "
+     var whereParams = [geo['state'],geo['city'],req.query.zipcode,req.query.school_id] 
+  }
   // if schooltype ['elem','middle','high']
   if(req.query.schoolType !=undefined && req.query.schoolType !="" ){
 

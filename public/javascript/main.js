@@ -122,7 +122,25 @@ app.controller('home', function($scope,$http,$state) {
       school_id:x.school_id
     })
   }
+  $('#autocomplete').autocomplete({
+      serviceUrl: '/autocomplete',
+      deferRequestBy:100,
+      dataType:'json',
+      lookupLimit:10,
+      onSelect: function (suggestion) {
+        var x = suggestion.data
+        $.getJSON('search',{profileRequest:true,zipcode:x.zipcode,school_id:x.school_id},function(data){
+          $state.go('profile',{
+            x:x[0],
+            zipcode:x.zipcode,
+            school_id:x.school_id
+          })
+        })
+       
 
+          console.log('You selected: ' + suggestion.value + ', ' + suggestion.data);
+      }
+  });
 
 });
 

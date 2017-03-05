@@ -11,7 +11,7 @@
                           <div class="nav-wrapper">
                             <form>
                               <div class="input-field">
-                                <input id="search" type="search" required placeholder="Enter school,zip or city to search for schools" style="height:64px;" ng-model="zipcode">
+                                <input id="autocomplete" type="search" required placeholder="Enter school,zip or city to search for schools" style="height:64px;" ng-model="zipcode">
                                 <label class="label-icon" for="search"><i class="material-icons">search</i></label>
                                 <i class="material-icons">close</i>
                               </div>
@@ -47,6 +47,12 @@
     	margin-bottom: 20px;
     	box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
     }
+    .autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }
+    .autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; }
+    .autocomplete-selected { background: #F0F0F0; }
+    .autocomplete-suggestions strong { font-weight: normal; color: #3399FF; }
+    .autocomplete-group { padding: 2px 5px; }
+    .autocomplete-group strong { display: block; border-bottom: 1px solid #000; }
     /*
     .help-box.help-green{
     	box-shadow: 0px 0px 8px 0px rgb(48, 193, 99);
@@ -62,21 +68,21 @@
     <section class="home bg-img-1 help-box help-green" id="why-important" >
     <h2 style="text-align: center;    margin-top: 0px;    font-size: 26px;"> Why is diversity in schools important?</h2>
     <div class="row">
-                <div class="col s4">
+                <div class="col l4 s12">
                   <div class="center promo promo-example">
                     <i class="material-icons">flash_on</i>
                     <p class="promo-caption">Speeds up development</p>
                     <p class="light center">There is increasing evidence that “diversity makes us smarter,</p>
                   </div>
                 </div>
-                <div class="col s4">
+                <div class="col l4 s12">
                   <div class="center promo promo-example">
                     <i class="material-icons">group</i>
                     <p class="promo-caption">Better social skills</p>
                     <p class="light center">Students can learn better how to navigate adulthood in an increasingly diverse society</p>
                   </div>
                 </div>
-                <div class="col s4">
+                <div class="col l4 s12">
                   <div class="center promo promo-example">
                     <i class="material-icons">business</i>
                     <p class="promo-caption">Helps in work environments</p>
@@ -91,21 +97,21 @@
     <section class="home bg-img-1 help-box help-blue hide" id="why-important">
     <h2 style="text-align: center;    margin-top: 0px;    font-size: 26px;"> What the data tells us?</h2>
     <div class="row">
-                <div class="col s4">
+                <div class="col l4 s12">
                   <div class="center promo promo-example">
                     <i class="material-icons">flash_on</i>
                     <p class="promo-caption">95% of schools aren't diverse</p>
                     <p class="light center">There is increasing evidence that “diversity makes us smarter,</p>
                   </div>
                 </div>
-                <div class="col s4">
+                <div class="col l4 s12">
                   <div class="center promo promo-example">
                     <i class="material-icons">group</i>
                     <p class="promo-caption">Minority students are less likely to be in gifted programs</p>
                     <p class="light center">Students can learn better how to navigate adulthood in an increasingly diverse society</p>
                   </div>
                 </div>
-                <div class="col s4">
+                <div class="col l4 s12">
                   <div class="center promo promo-example">
                     <i class="material-icons">business</i>
                     <p class="promo-caption">We have a long way to go</p>
@@ -119,21 +125,21 @@
     <section class="home bg-img-1 help-box sky-blue hide" id="why-important">
     <h2 style="text-align: center;    margin-top: 0px;    font-size: 26px;">How to help?</h2>
     <div class="row">
-                <div class="col s4">
+                <div class="col l4 s12">
                   <div class="center promo promo-example">
                     <i class="material-icons">flash_on</i>
                     <p class="promo-caption">Help promote student diversity</p>
                     <p class="light center">There is increasing evidence that “diversity makes us smarter,</p>
                   </div>
                 </div>
-                <div class="col s4">
+                <div class="col l4 s12">
                   <div class="center promo promo-example">
                     <i class="material-icons">group</i>
                     <p class="promo-caption">Promote minority students into more gifted programs </p>
                     <p class="light center">Students can learn better how to navigate adulthood in an increasingly diverse society</p>
                   </div>
                 </div>
-                <div class="col s4">
+                <div class="col l4 s12">
                   <div class="center promo promo-example">
                     <i class="material-icons">business</i>
                     <p class="promo-caption">We have a long way to go</p>

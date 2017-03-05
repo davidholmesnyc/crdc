@@ -4,6 +4,7 @@
   "description": "A simple way to view the 2013-2014 Civil Rights Collection Dataset for Department of Education",
   "main": "server.js",
   "dependencies": {
+    "autocomplete": "0.0.1",
     "byline": "^4.2.1",
     "cities": "^1.1.2",
     "csvtojson": "^0.5.14",
