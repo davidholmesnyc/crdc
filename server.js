@@ -62,13 +62,9 @@ app.use(express.static('public'));
  * 
  */
 
- var Autocomplete = require('autocomplete')
- // Create the autocomplete object
- var autocomplete = Autocomplete.connectAutocomplete();
-
 
  var fs = require('fs')
- var autocomplete
+
  fs.readFile('public/data/autocomplete.csv', 'utf8', function (err,data) {
    if (err) {
      return console.log(err);
