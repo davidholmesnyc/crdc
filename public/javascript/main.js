@@ -155,6 +155,36 @@ app.controller('results', function($scope,$http,$state) {
       $scope.myData = response.data;
       $scope.loading = false;
   });
+
+  $scope.buttonSearch = function(){
+    if(helper.ifMobile()){
+      $('.button-collapse').sideNav('hide');
+    }
+    var data = {zipCode:$scope.zipcode}
+    if($scope.schoolType !="" && $scope.schoolType !=undefined && $scope.schoolType !='all'){
+     data['schoolType'] = $scope.schoolType
+    }
+    $state.go('results',data)
+  }
+  $('#autocomplete').autocomplete({
+      serviceUrl: '/autocomplete',
+      //deferRequestBy:100,
+      dataType:'json',
+      lookupLimit:10,
+      onSelect: function (suggestion) {
+        var x = suggestion.data
+        $.getJSON('search',{profileRequest:true,zipcode:x.zipcode,school_id:x.school_id},function(data){
+          $state.go('profile',{
+            x:x[0],
+            zipcode:x.zipcode,
+            school_id:x.school_id
+          })
+        })
+       
+
+          console.log('You selected: ' + suggestion.value + ', ' + suggestion.data);
+      }
+  });
 })
 
 app.controller('profile', function($scope,$http,$state) {

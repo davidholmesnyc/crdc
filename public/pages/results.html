@@ -3,6 +3,11 @@
   <div class="col s12 m4 l2"><p></p></div>
   <div class="col s12 m4 l8">         
 
+      <section class="home  help-box help-green" id="why-important" style="margin-right:0px;margin-left:0px;margin-top:20px;" >
+         <input id="autocomplete" type="search" required placeholder="Enter school,zip or city to search for schools" style="height:64px;" ng-model="zipcode">
+         <a class="waves-effect waves-light btn" ng-click="buttonSearch()" style="float:right"><i class="material-icons right" style="    font-size: 22px;">search</i>Search</a>
+      </section>
+
 
 <a href="javascript:" class="results-link modal-trigger" ng-repeat="x in myData" >
    <div class="card-panel" ng-click="profile(x)">
