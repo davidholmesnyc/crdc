@@ -1,2 +1,23 @@
 <br/><br/><div id="student_diversity_by_state" style="    margin-left: 20px;
     margin-right: 20px;"></div>
+
+    <table style="background:white;margin-left:20px;margin-right:20px;margin-top:20px;    width: 97%;padding:10px;">
+           <thead>
+             <tr>
+                 <th data-field="id">State</th>
+                 <th data-field="name">Total Students</th>
+                 <th data-field="price">Total Minorities</th>
+                 <th data-field="price">Percentage</th>
+             </tr>
+           </thead>
+
+           <tbody >
+             <tr ng-repeat="x in diversity">
+			   <td>{{x.state}}</td>
+               <td>{{x.total_students | number : fractionSize}}</td>
+               <td>{{x.total_miniorities | number : fractionSize}}</td>
+               <td>{{x.percent}}%</td>
+             </tr>
+
+           </tbody>
+         </table>

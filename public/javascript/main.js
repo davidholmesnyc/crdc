@@ -318,14 +318,15 @@ $stateProvider
   .state('maps', {
     url: "/maps",
     templateUrl: "pages/maps.html",
-    controller:function(){
+    controller:function($scope){
 
       Plotly.d3.csv('/data/states-total-students-vs-minorities.csv', function(err, rows){
             function unpack(rows, key) {
                 return rows.map(function(row) { return row[key]; });
             }
-        console.log(unpack(rows, 'postal'));
-       var data = [{
+      $scope.diversity = rows
+      $scope.$digest();
+      var data = [{
                     type: 'choropleth',
                     locationmode: 'USA-states',
                     locations: unpack(rows, 'state'),
@@ -334,9 +335,9 @@ $stateProvider
                     autocolorscale: false,
                     colorscale:[ [0, 'rgb(255,0,0)'], [.5, 'rgb(83, 106, 194)'] , [1, 'rgb(0,0,255)']   ]
                 }];
-
-      console.log(data.locations);
-        var layout = {
+      
+      console.log("test",$scope.diversity)
+      var layout = {
                 title: '2013-2014 US Student Diversity Percentage',
                 geo:{
                   scope: 'usa',
