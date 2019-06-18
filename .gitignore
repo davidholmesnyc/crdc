@@ -1,4 +1,5 @@
 data/*
 public/data/crdc_data_by_zip_json/*
 public/data/crdc_data_by_zip_json/01057/250804001655.json
-deploy_to_aws.sh
+Deploy-to-aws.sh
+Deploy_to_aws.sh
