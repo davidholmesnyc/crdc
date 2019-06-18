@@ -2,6 +2,9 @@
 var app = angular.module('crcd', ['ui.router']);
 // default search url 
 var search_url = 'search?zipcode='
+
+
+
 // helper functions 
 var helper = {
   /**
@@ -89,8 +92,31 @@ var helper = {
     'native hawaiian':'#9fe209',
     'multi race':'#09e2c7',
     'white':'#fff2d1'
+  },
+  'all_races_query':function(column_preface,alias_preface){
+      var races = {
+        'HI':'Hispanic',
+        'AM':'American_Indian',
+        'AS':'asian',
+        'HP':'Native_Hawaiian',
+        'BL':'black',
+        'TR':'multi_race',
+        'WH':'white'
+      } 
+      var query_string = ''
+      var keys = Object.keys(races);
+      var last = keys[keys.length-1];
+      for(var key in races){
+        var race = races[key]
+        query_string += "cast(data->>'"+column_preface+"_"+key+"_M' as int) + cast(data->>'"+column_preface+"_"+key+"_F' as int) as "+alias_preface+"_"+races[key]
+        if(key != last){
+          query_string +=','
+        }
+      }
+      return query_string
+    }
   }
-}
+
 
 app.controller('nav', function($scope,$http,$state) {
   var _url =$state.current.name
@@ -122,27 +148,83 @@ app.controller('home', function($scope,$http,$state) {
       school_id:x.school_id
     })
   }
-  $('#autocomplete').autocomplete({
-      serviceUrl: '/autocomplete',
-      //deferRequestBy:100,
-      dataType:'json',
-      lookupLimit:10,
-      onSelect: function (suggestion) {
-        var x = suggestion.data
-        $.getJSON('search',{profileRequest:true,zipcode:x.zipcode,school_id:x.school_id},function(data){
-          $state.go('profile',{
-            x:x[0],
-            zipcode:x.zipcode,
-            school_id:x.school_id
-          })
-        })
-       
 
-          console.log('You selected: ' + suggestion.value + ', ' + suggestion.data);
+  function SetUpAutocomplete(){
+    fetch("./data/autocomplete.csv")
+    .then(function(response){
+        return response.text()
+    })
+    .then(function(myCSV) {
+      // console.log(myCSV)
+      var myCSV = myCSV.split("\n")
+      var csvData = []
+      for (var i = 0; i < myCSV.length; i++) {
+        if(i === 0){
+          continue
+        }
+          csvData.push(myCSV[i].split(","))
       }
-  });
+      //console.log(csvData)
+       var auto = new autoComplete({
+           selector: 'input[name="q"]',
+           minChars: 2,
+           source: function(term, suggest){
+               term = term.toLowerCase();
+               var choices = csvData
+               var matches = [];
+               for (i=0; i<choices.length; i++){
+                  var name = ( choices[i][1]  +" "+ choices[i][2] +","+ choices[i][3] +" "+ choices[i][4]  ).toLowerCase()
+                  if (name.includes(term)) {
+                      var match ={
+                        "name": name,
+                        "id": choices[i][4],
+                        "zipcode":choices[i][4],
+                        "nces_id":choices[i][0],
+                        "data":choices[i]
+                      }
+                    matches.push(match)
+
+                  };
+              }
+               suggest(matches);
+           },
+           renderItem: function (item, search){
+               search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+               var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
+
+               var str = `
+                  <div class="autocomplete-suggestion" data-langname="${item.name}" data-zipcode="${item.zipcode}"  data-id="${item.nces_id}" data-lang="${item.name}" data-val="${search}" style="padding:20px" >
+                    
+                    ${item.name.replace(re, "<b>$1</b>")}
+                    
+                  </div>
+               `
+               return str
+           }
+
+           ,  
+
+           onSelect: function(e, term, item){
+
+           	console.log("ITEM",item)
+              $state.go('profile',{
+                nces_id:item.getAttribute('data-id'),
+                zipcode:item.getAttribute('data-zipcode')
+              })
+            }
+
+       });
+
+    });
+
+
+  }
+
+
+  SetUpAutocomplete()
 
 });
+
 
 app.controller('results', function($scope,$http,$state) {
   var whereParams = ''
@@ -188,6 +270,10 @@ app.controller('results', function($scope,$http,$state) {
 })
 
 app.controller('profile', function($scope,$http,$state) {
+
+
+
+
   function createPieChart(id,data){
     var ctx = document.getElementById(id);
     var labels = []
@@ -221,8 +307,92 @@ app.controller('profile', function($scope,$http,$state) {
         
     });
   }
+
+  function countNumbers(column,data,OnlyMiniority){
+      var races = {
+        'HI':'Hispanic',
+        'AM':'American_Indian',
+        'AS':'asian',
+        'HP':'Native_Hawaiian',
+        'BL':'black',
+        'TR':'multi_race',
+        'WH':'white'
+      } 
+      var query_string = ''
+      var keys = Object.keys(races);
+      var last = keys[keys.length-1];
+      var total = 0 
+      for(var key in races){
+        if(OnlyMiniority && key === "WH"){continue};
+        var race = races[key]
+        total += parseInt(data[column+"_"+key+"_M"]) + parseInt(data[column+"_"+key+"_F"] )
+        // query_string += "cast(data->>'"+column_preface+"_"+key+"_M' as int) + cast(data->>'"+column_preface+"_"+key+"_F' as int) as "+alias_preface+"_"+races[key]
+        if(key != last){
+          query_string +=','
+        }
+      }
+      return total
+    }
+  function addRaceToObject(CRCDcolumn,NewColumn,x,OnlyMiniority){
+      var races = {
+        'HI':'hispanic',
+        'AM':'American_indian',
+        'AS':'asian',
+        'HP':'native_hawaiian',
+        'BL':'black',
+        'TR':'multi_race',
+        'WH':'white'
+      } 
+      var query_string = ''
+      var keys = Object.keys(races);
+      var last = keys[keys.length-1];
+      var total = 0 
+      for(var key in races){
+        if(OnlyMiniority && key === "WH"){continue};
+        var race = races[key]
+        x[NewColumn+"_"+races[key]] = parseInt(x[CRCDcolumn+"_"+key+"_M"]) + parseInt(x[CRCDcolumn+"_"+key+"_F"] )
+        // query_string += "cast(data->>'"+column_preface+"_"+key+"_M' as int) + cast(data->>'"+column_preface+"_"+key+"_F' as int) as "+alias_preface+"_"+races[key]
+        if(key != last){
+          query_string +=','
+        }
+      }
+      return x
+    }
+
+  
   $scope.showProfile =  function(x){
      scroll(0,0)
+     // hacks to use frontned instead of back
+     x["inhouse_suspension"] = helper.all_races_query("SCH_DISCWODIS_ISS","inhouse_suspension")
+     x["School_Name"] = x["SCH_NAME"]
+     x["total_students"] = parseInt(x["TOT_ENR_F"]) + parseInt(x["TOT_ENR_M"])
+     x["total_miniorities"] = countNumbers("SCH_ENR",x,true)
+     x["total_teachers"] = x["SCH_FTETEACH_TOT"]
+     x["total_suspended"] = countNumbers("SCH_DISCWODIS_MULTOOS",x,false) +   countNumbers("SCH_DISCWODIS_SINGOOS",x,false) + countNumbers("SCH_DISCWODIS_ISS",x,false)
+     x = addRaceToObject("SCH_ENR","enrolled",x,false)
+     x = addRaceToObject("SCH_DISCWODIS_MULTOOS","multi_suspension",x,false)
+     x = addRaceToObject("SCH_DISCWODIS_SINGOOS","single_suspension",x,false)
+     x = addRaceToObject("SCH_DISCWODIS_ISS","inhouse_suspension",x,false)
+     x = addRaceToObject("SCH_GTENR","gifted_students",x,false)
+
+     $scope.modal = {}
+     $scope.modal.schoolName = x["SCH_NAME"]
+     $scope.modal.location = x["CITY"]+","+x["LEA_STATE"] 
+     $scope.absent_teachers = helper.per(x["SCH_FTETEACH_ABSENT"], x["SCH_FTETEACH_TOT"])
+
+     b = x
+     // console.log(x)
+     // select(knex.raw(helper.all_races_query("SCH_ENR","enrolled"))). 
+     // select(knex.raw(helper.all_races_query("SCH_DISCWODIS_MULTOOS","multi_suspension"))).    
+     // select(knex.raw(helper.all_races_query("SCH_DISCWODIS_SINGOOS","single_suspension"))).    
+     // select(knex.raw(helper.all_races_query("SCH_DISCWODIS_ISS","inhouse_suspension"))).     
+     // select(knex.raw(helper.all_races_query("SCH_GTENR","gifted_students"))).     
+     // select(knex.raw(helper.all_races_query("SCH_HBDISCIPLINED_RAC","bullied_or_harrassed_students"))).     
+     // select(knex.raw(helper.all_races_query("SCH_DISCWODIS_ARR","arrested"))).     
+     // select(knex.raw(helper.all_races_query("SCH_DISCWODIS_REF","ref_arrested"))).
+
+
+
      var likely = helper.more_likely(x)
      var find_gifted_students_insights = helper.find_insights(x,'gifted_students')
      var races_insights = helper.find_insights(x,'enrolled')
@@ -235,10 +405,8 @@ app.controller('profile', function($scope,$http,$state) {
      $scope.least_gifted_students = helper.least_likely(find_gifted_students_insights).slice(-1)[0]
      $scope.least_likey = helper.least_likely(likely).slice(-1)[0]
      $scope.diversetyPercentage = Math.abs((((x.total_students - x.total_miniorities) / x.total_students) * 100) - 100).toFixed(0)
-     $scope.modal = {}
-     $scope.modal.schoolName = x.school_name
-     $scope.modal.location = x.city+","+x.state
-     $scope.absent_teachers = helper.per(x.absent_teachers, x.total_teachers)
+    
+
      $scope.highest_races = helper.races_list(x)[0]
      var data = {
          labels: ["White", "Black", "Hispanic", "Asian", "American Indian", "Native Hawaiian", "Multi race"],
@@ -308,24 +476,14 @@ app.controller('profile', function($scope,$http,$state) {
   }
   else
   {
-    $http.get(search_url+$state.params.zipcode+"&school_id="+$state.params.school_id).then(function(response) {
-      $scope.showProfile(response.data[0])
+
+    var url = "./data/crdc_data_by_zip_json/"+$state.params.zipcode+"/"+$state.params.nces_id+".json"
+    $http.get(url).then(function(response) {
+
+      $scope.showProfile(response.data)
     })
   }
 })
-
-$(function(){
-  $('.modal-trigger').leanModal();
-  $('.button-collapse').sideNav({
-        menuWidth: 300, // Default is 240
-        edge: 'left', // Choose the horizontal origin
-        closeOnClick: false // Closes side-nav on <a> clicks, useful for Angular/Meteor
-      }
-    );
-
-
-})
-
 
 app.config(function($stateProvider, $urlRouterProvider) {
 
@@ -386,7 +544,7 @@ $stateProvider
     }
   })
   .state('profile', {
-    url: "/profile/:zipcode/:school_id",
+    url: "/profile/:zipcode/:nces_id",
     params:{
       x:null
     },
